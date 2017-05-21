@@ -1,0 +1,16 @@
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\JumpOrQuit.exe
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\JumpOrQuit.pdb
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.dll
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.Game.dll
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.dll
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.dll
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.dll
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.xml
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.Game.xml
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.Graphics.xml
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.GamerServices.xml
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Microsoft.Xna.Framework.Input.Touch.xml
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\obj\x86\Debug\JumpOrQuit.csprojResolveAssemblyReference.cache
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\obj\x86\Debug\JumpOrQuit.exe
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\obj\x86\Debug\JumpOrQuit.pdb
