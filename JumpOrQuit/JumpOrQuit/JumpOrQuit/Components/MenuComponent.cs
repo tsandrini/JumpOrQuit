@@ -28,12 +28,12 @@ namespace JumpOrQuit.Components
 
         public override void Initialize()
         {
-
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            this.menuConfirm = this.game.Content.Load<SoundEffect>(@"SFX\menu_confirm");
 
             base.LoadContent();
         }
@@ -45,13 +45,32 @@ namespace JumpOrQuit.Components
 
         public override void Update(GameTime gameTime)
         {
+            if (this.game.KeyPressed(Keys.Enter))
+            {
+                this.ItemSubmitted();
+            }
+
 
             base.Update(gameTime);
         }
 
         private void ItemSubmitted()
         {
+            switch (this.menuItems.selectedItem.identifier)
+            {
+                case "exit":
+                    {
+                        this.game.Exit();
+                        break;
+                    }
+                case "new-game":
+                    {
+                        // switch game window
+                        break;
+                    }
+            }
 
+            this.menuConfirm.Play();
         }
     }
 }

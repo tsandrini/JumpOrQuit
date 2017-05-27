@@ -63,7 +63,7 @@ namespace JumpOrQuit.Components
                 this.selectedItem = this.items[0];
             }
 
-            // this.menuSelect.Play();
+            this.menuSelect.Play();
         }
 
         private void SelectPreviousItem()
@@ -80,7 +80,7 @@ namespace JumpOrQuit.Components
                 this.selectedItem = this.items[this.items.Count - 1];
             }
 
-           // this.menuSelect.Play();
+            this.menuSelect.Play();
         }
 
         public override void Initialize()
@@ -90,7 +90,7 @@ namespace JumpOrQuit.Components
 
         protected override void LoadContent()
         {
-            // this.menuSelect = game.Content.Load<SoundEffect>(@"SFX\menu_select");
+            this.menuSelect = game.Content.Load<SoundEffect>(@"SFX\menu_select");
 
             base.LoadContent();
         }
@@ -123,8 +123,8 @@ namespace JumpOrQuit.Components
                     color = this.selectedColor;
                 }
 
-                game.spriteBatch.MuchCoolerFont(game.baseFont, item.text, item.pos, color, item.scale);
-                item.size = game.baseFont.MeasureString(item.text);
+                game.spriteBatch.MuchCoolerFont(game.menuFont, item.text, item.pos, color, item.scale);
+                item.size = game.menuFont.MeasureString(item.text);
             }
 
             game.spriteBatch.End();
