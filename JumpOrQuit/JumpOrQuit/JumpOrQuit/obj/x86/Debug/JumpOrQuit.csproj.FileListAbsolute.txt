@@ -14,3 +14,4 @@ C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\obj\x86\Deb
 C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\obj\x86\Debug\JumpOrQuit.exe
 C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\obj\x86\Debug\JumpOrQuit.pdb
+C:\Users\Tomáš\Desktop\JumpOrQuit\JumpOrQuit\JumpOrQuit\JumpOrQuit\bin\x86\Debug\Content\Fonts\centuryGothic.xnb

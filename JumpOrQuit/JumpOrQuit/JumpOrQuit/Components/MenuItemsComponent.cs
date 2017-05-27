@@ -63,7 +63,7 @@ namespace JumpOrQuit.Components
                 this.selectedItem = this.items[0];
             }
 
-            this.menuSelect.Play();
+            // this.menuSelect.Play();
         }
 
         private void SelectPreviousItem()
@@ -80,7 +80,7 @@ namespace JumpOrQuit.Components
                 this.selectedItem = this.items[this.items.Count - 1];
             }
 
-            this.menuSelect.Play();
+           // this.menuSelect.Play();
         }
 
         public override void Initialize()
@@ -90,7 +90,7 @@ namespace JumpOrQuit.Components
 
         protected override void LoadContent()
         {
-            this.menuSelect = game.Content.Load<SoundEffect>(@"SFX\menu_select");
+            // this.menuSelect = game.Content.Load<SoundEffect>(@"SFX\menu_select");
 
             base.LoadContent();
         }
@@ -98,31 +98,14 @@ namespace JumpOrQuit.Components
         public override void Update(GameTime gameTime)
         {
             // KEYBOARD INPUT
-            if (game.NewKeyboardKey(Keys.Up))
+            if (game.KeyPressed(Keys.Up))
             {
                 this.SelectPreviousItem();
             }
 
-            if (game.NewKeyboardKey(Keys.Down))
+            if (game.KeyPressed(Keys.Down))
             {
                 this.SelectNextItem();
-            }
-
-            // MOUSE MOVEMENT
-            if (Math.Abs(game.getMousePosChange().Y) > 0)
-            {
-                foreach (MenuItem item in this.items)
-                {
-
-                    Rectangle bounds = new Rectangle((int)item.pos.X, (int)item.pos.Y, (int)item.size.X, (int)item.size.Y);
-
-                    if (bounds.Contains(game.mouse.X, game.mouse.Y) && this.selectedItem != item)
-                    {
-                        this.selectedItem = item;
-                        this.menuSelect.Play();
-                        break;
-                    }
-                }
             }
 
             base.Update(gameTime);
@@ -140,8 +123,8 @@ namespace JumpOrQuit.Components
                     color = this.selectedColor;
                 }
 
-                game.spriteBatch.MuchCoolerFont(game.fontDistInking, item.text, item.pos, color, item.scale);
-                item.size = game.fontDistInking.MeasureString(item.text);
+                game.spriteBatch.MuchCoolerFont(game.baseFont, item.text, item.pos, color, item.scale);
+                item.size = game.baseFont.MeasureString(item.text);
             }
 
             game.spriteBatch.End();
