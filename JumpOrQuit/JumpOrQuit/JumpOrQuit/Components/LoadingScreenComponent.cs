@@ -9,11 +9,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
 
 namespace JumpOrQuit.Components
 {
 
-    public class LoadingScreenComponent : Microsoft.Xna.Framework.DrawableGameComponent
+    public class LoadingScreenComponent : DrawableGameComponent
     {
         public LoadingScreenComponent(Game game)
             : base(game)

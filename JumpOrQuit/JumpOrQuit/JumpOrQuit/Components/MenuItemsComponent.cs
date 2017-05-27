@@ -11,10 +11,11 @@ using Microsoft.Xna.Framework.Media;
 
 using JumpOrQuit.Classes;
 
+using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
 
 namespace JumpOrQuit.Components 
 {
-    public class MenuItemsComponent : Microsoft.Xna.Framework.DrawableGameComponent
+    public class MenuItemsComponent : DrawableGameComponent
     {
         private Game game;
         public List<MenuItem> items;

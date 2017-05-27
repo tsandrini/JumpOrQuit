@@ -11,9 +11,11 @@ using Microsoft.Xna.Framework.Media;
 
 using JumpOrQuit.Classes;
 using JumpOrQuit.Components;
+using JumpOrQuit.Helpers;
 
 // Aliases
 using GameWindow = JumpOrQuit.Classes.GameWindow; // Override the default game window
+using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
 
 namespace JumpOrQuit
 {
@@ -25,7 +27,8 @@ namespace JumpOrQuit
         public KeyboardState keys, lastKey;
         public MouseState mouse, lastMouse;
         public SpriteFont menuFont;
-        protected GameWindow loadingScreen, menuWindow, ingameWindow;
+        public GameWindow loadingScreen, menuWindow, ingameWindow;
+        public GameSettings settings;
 
         public Viewport viewport
         {
@@ -51,6 +54,8 @@ namespace JumpOrQuit
 
         protected override void Initialize()
         {
+            this.settings = new GameSettings();
+
             MenuItemsComponent menuItems = new MenuItemsComponent(
                 this,
                 new Vector2(this.viewport.Width * 0.45f, this.viewport.Height * 0.75f),
@@ -66,7 +71,11 @@ namespace JumpOrQuit
             MenuComponent menu = new MenuComponent(this, menuItems);
             this.Components.Add(menu);
 
+            LevelComponent level = new LevelComponent(this);
+            this.Components.Add(level);
+
             this.menuWindow = new GameWindow(this, menu, menuItems);
+            this.ingameWindow = new GameWindow(this, level);
 
             foreach (GameComponent component in this.Components)
             {
@@ -76,10 +85,9 @@ namespace JumpOrQuit
             // BASE GRAPHICS STUFF
             this.IsMouseVisible = false;
             //this.graphics.IsFullScreen = true;
-            this.graphics.PreferredBackBufferHeight = 1080;
-            this.graphics.PreferredBackBufferWidth = 1920;
+            this.graphics.PreferredBackBufferHeight = 720;
+            this.graphics.PreferredBackBufferWidth = 1280;
             this.graphics.ApplyChanges();
-
 
             this.SwitchWindows(menuWindow);
 
@@ -123,6 +131,11 @@ namespace JumpOrQuit
             return keys.IsKeyDown(key) && lastKey.IsKeyUp(key);
         }
 
+        public bool KeyDown(Keys key)
+        {
+            return keys.IsKeyDown(key);
+        }
+
         public void SwitchWindows(GameWindow gameWindow)
         {
             GameComponent[] granted = gameWindow.ReturnComponents();
@@ -141,6 +154,10 @@ namespace JumpOrQuit
             if (component is DrawableGameComponent)
             {
                 ((DrawableGameComponent)component).Visible = state;
+                if (state == true)
+                {
+                    ((DrawableGameComponent)component).Refresh();
+                }
             }
         }
     }

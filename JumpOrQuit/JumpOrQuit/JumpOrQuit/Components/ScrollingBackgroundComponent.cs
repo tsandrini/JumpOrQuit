@@ -11,9 +11,11 @@ using Microsoft.Xna.Framework.Media;
 
 using JumpOrQuit.Classes;
 
+using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
+
 namespace JumpOrQuit.Components
 {
-    public class ScrollingBackgroundComponent : Microsoft.Xna.Framework.DrawableGameComponent
+    public class ScrollingBackgroundComponent : DrawableGameComponent
     {
         private Game game;
         private List<ScrollingBackground> backgrounds;

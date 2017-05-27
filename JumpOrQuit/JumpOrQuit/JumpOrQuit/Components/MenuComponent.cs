@@ -9,11 +9,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
 
 namespace JumpOrQuit.Components 
 {
 
-    public class MenuComponent : Microsoft.Xna.Framework.DrawableGameComponent
+    public class MenuComponent : DrawableGameComponent
     {
         private Game game;
         private MenuItemsComponent menuItems;
@@ -65,7 +66,7 @@ namespace JumpOrQuit.Components
                     }
                 case "new-game":
                     {
-                        // switch game window
+                        this.game.SwitchWindows(this.game.ingameWindow);
                         break;
                     }
             }
