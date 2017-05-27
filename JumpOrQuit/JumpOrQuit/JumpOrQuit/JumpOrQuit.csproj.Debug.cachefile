@@ -1,1 +1,11 @@
-Content\Fonts\centuryGothic.xnb
+Content\SFX\death.xnb
+Content\SFX\menu_confirm.xnb
+Content\SFX\menu_select.xnb
+Content\Graphics\Sprites\Player\idle.xnb
+Content\Graphics\Sprites\Player\duck.xnb
+Content\Graphics\Sprites\Player\fall.xnb
+Content\Graphics\Sprites\Player\jump.xnb
+Content\Graphics\Sprites\Player\stand.xnb
+Content\Graphics\Sprites\Player\walk1.xnb
+Content\Graphics\Sprites\Player\walk2.xnb
+Content\Fonts\menuFont.xnb

@@ -24,7 +24,7 @@ namespace JumpOrQuit
 
         public KeyboardState keys, lastKey;
         public MouseState mouse, lastMouse;
-        public SpriteFont baseFont;
+        public SpriteFont menuFont;
         protected GameWindow loadingScreen, menuWindow, ingameWindow;
 
         public Viewport viewport
@@ -56,7 +56,7 @@ namespace JumpOrQuit
                 new Vector2(this.viewport.Width * 0.45f, this.viewport.Height * 0.75f),
                 Color.Blue,
                 Color.Yellow,
-                75
+                72
             );
 
             menuItems.AddItem("Hrát", "new-game");
@@ -89,7 +89,7 @@ namespace JumpOrQuit
         protected override void LoadContent()
         {
             this.spriteBatch = new CoolFont(GraphicsDevice);
-            this.baseFont = Content.Load<SpriteFont>(@"Fonts\centuryGothic");
+            this.menuFont = Content.Load<SpriteFont>(@"Fonts\menuFont");
         }
 
         protected override void UnloadContent()
