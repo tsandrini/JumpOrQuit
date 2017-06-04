@@ -11,26 +11,27 @@ using Microsoft.Xna.Framework.Media;
 
 using JumpOrQuit.Classes;
 
-using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
+using DrawableGameComponent = JumpOrQuit.Core.RefreshableGameComponent;
 
 namespace JumpOrQuit.Components 
 {
     public class MenuItemsComponent : DrawableGameComponent
     {
         private Game game;
+        private GameSettings settings;
         public List<MenuItem> items;
         public MenuItem selectedItem;
         public MouseState mouse;
         private Vector2 pos;
         private Color unselectedColor;
         private Color selectedColor;
-        protected SoundEffect menuSelect;
         private int height;
 
-        public MenuItemsComponent(Game game, Vector2 pos, Color unselectedColor, Color selectedColor, int height)
+        public MenuItemsComponent(Game game, GameSettings settings, Vector2 pos, Color unselectedColor, Color selectedColor, int height)
             : base(game)
         {
             this.game = game;
+            this.settings = settings;
             this.pos = pos;
             this.unselectedColor = unselectedColor;
             this.selectedColor = selectedColor;
@@ -64,7 +65,7 @@ namespace JumpOrQuit.Components
                 this.selectedItem = this.items[0];
             }
 
-            this.menuSelect.Play();
+            if (this.settings.soundEnabled) this.settings.sounds["menu.select"].Play();
         }
 
         private void SelectPreviousItem()
@@ -81,7 +82,7 @@ namespace JumpOrQuit.Components
                 this.selectedItem = this.items[this.items.Count - 1];
             }
 
-            this.menuSelect.Play();
+            if (this.settings.soundEnabled) this.settings.sounds["menu.select"].Play();
         }
 
         public override void Initialize()
@@ -91,14 +92,11 @@ namespace JumpOrQuit.Components
 
         protected override void LoadContent()
         {
-            this.menuSelect = game.Content.Load<SoundEffect>(@"SFX\menu_select");
-
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-            // KEYBOARD INPUT
             if (game.KeyPressed(Keys.Up))
             {
                 this.SelectPreviousItem();

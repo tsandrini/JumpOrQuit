@@ -9,7 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
+using JumpOrQuit.Classes;
+using JumpOrQuit.Enums;
+
+using DrawableGameComponent = JumpOrQuit.Core.RefreshableGameComponent;
 
 namespace JumpOrQuit.Components 
 {
@@ -17,14 +20,15 @@ namespace JumpOrQuit.Components
     public class MenuComponent : DrawableGameComponent
     {
         private Game game;
+        private GameSettings settings;
         private MenuItemsComponent menuItems;
-        private SoundEffect menuConfirm;
 
-        public MenuComponent(Game game, MenuItemsComponent menuItems)
+        public MenuComponent(Game game, GameSettings settings, MenuItemsComponent menuItems)
             : base(game)
         {
             this.game = game;
             this.menuItems = menuItems;
+            this.settings = settings;
         }
 
         public override void Initialize()
@@ -34,8 +38,6 @@ namespace JumpOrQuit.Components
 
         protected override void LoadContent()
         {
-            this.menuConfirm = this.game.Content.Load<SoundEffect>(@"SFX\menu_confirm");
-
             base.LoadContent();
         }
 
@@ -51,7 +53,6 @@ namespace JumpOrQuit.Components
                 this.ItemSubmitted();
             }
 
-
             base.Update(gameTime);
         }
 
@@ -66,12 +67,13 @@ namespace JumpOrQuit.Components
                     }
                 case "new-game":
                     {
+                        this.game.gameState = GameState.Playing;
                         this.game.SwitchWindows(this.game.ingameWindow);
                         break;
                     }
             }
 
-            this.menuConfirm.Play();
+            if (this.settings.soundEnabled) this.settings.sounds["menu.confirm"].Play();
         }
     }
 }

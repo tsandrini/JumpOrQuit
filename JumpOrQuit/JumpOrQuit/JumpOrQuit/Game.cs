@@ -12,17 +12,19 @@ using Microsoft.Xna.Framework.Media;
 using JumpOrQuit.Classes;
 using JumpOrQuit.Components;
 using JumpOrQuit.Helpers;
+using JumpOrQuit.Enums; 
 
 // Aliases
-using GameWindow = JumpOrQuit.Classes.GameWindow; // Override the default game window
-using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
+using GameWindow = JumpOrQuit.Core.GameWindow; // Override the default game window
+using DrawableGameComponent = JumpOrQuit.Core.RefreshableGameComponent;
 
 namespace JumpOrQuit
 {
     public class Game : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
+        private GraphicsDeviceManager graphics;
         public CoolFont spriteBatch;
+        public GameState gameState;
 
         public KeyboardState keys, lastKey;
         public MouseState mouse, lastMouse;
@@ -56,8 +58,15 @@ namespace JumpOrQuit
         {
             this.settings = new GameSettings();
 
+            GameSettingsComponent settingsComponent = new GameSettingsComponent(this, settings, graphics);
+            this.Components.Add(settingsComponent);
+
+            LoadingScreenComponent loading = new LoadingScreenComponent(this, settings);
+            this.Components.Add(loading);
+
             MenuItemsComponent menuItems = new MenuItemsComponent(
                 this,
+                settings,
                 new Vector2(this.viewport.Width * 0.45f, this.viewport.Height * 0.75f),
                 Color.Blue,
                 Color.Yellow,
@@ -68,14 +77,15 @@ namespace JumpOrQuit
             menuItems.AddItem("Nastavení", "settings");
             menuItems.AddItem("Odejít", "exit");
 
-            MenuComponent menu = new MenuComponent(this, menuItems);
+            MenuComponent menu = new MenuComponent(this,settings, menuItems);
             this.Components.Add(menu);
 
-            LevelComponent level = new LevelComponent(this);
+            LevelComponent level = new LevelComponent(this, settings);
             this.Components.Add(level);
 
-            this.menuWindow = new GameWindow(this, menu, menuItems);
-            this.ingameWindow = new GameWindow(this, level);
+            this.loadingScreen = new GameWindow(this, loading);
+            this.menuWindow = new GameWindow(this, menu, menuItems, settingsComponent);
+            this.ingameWindow = new GameWindow(this, level, settingsComponent);
 
             foreach (GameComponent component in this.Components)
             {
@@ -89,7 +99,7 @@ namespace JumpOrQuit
             this.graphics.PreferredBackBufferWidth = 1280;
             this.graphics.ApplyChanges();
 
-            this.SwitchWindows(menuWindow);
+            this.SwitchWindows(loadingScreen);
 
             base.Initialize();
         }

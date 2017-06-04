@@ -13,51 +13,61 @@ namespace JumpOrQuit.Classes
     {
         public Dictionary<string, Texture2D> sprite;
         public Vector2 pos, startingPos, origins;
-        public bool falling, jumping, left, right;
+        public bool falling, jumping, left, right, canJump;
         public string lastSprite, currentSprite;
-        public int spriteDuration, maxSpriteDuration, fallingSpeed, movementSpeed, jumpingSpeed;
+        public int spriteDuration, maxSpriteDuration, maxJumpDuration, fallingSpeed, movementSpeed, jumpingSpeed, height, width;
 
         private string walkSprite, standSprite;
 
-        public Player(Dictionary<string, Texture2D> sprite, Vector2 pos)
+        public Player(Vector2 pos)
         {
             this.pos = this.startingPos = pos;
-            this.Reset(sprite);
         }
 
         public void Reset(Dictionary<string, Texture2D> sprite)
         {
+            this.pos = startingPos;
             this.sprite = sprite;
-            this.origins = new Vector2(sprite["idle"].Width / 2f, sprite["idle"].Height / 2f);
-            this.falling = this.left = this.right;
-            this.fallingSpeed = this.movementSpeed = jumpingSpeed = 3;
-            this.maxSpriteDuration = 10;
+            this.origins = new Vector2(0, sprite["idle"].Height);
+            this.width = sprite["idle"].Width;
+            this.height = sprite["idle"].Height;
+
+            this.jumping = this.left = this.right = this.falling = this.canJump = false;
+            this.fallingSpeed = this.movementSpeed = 6;
+            this.jumpingSpeed = 10;
+            this.maxSpriteDuration = 15;
+            this.maxJumpDuration = 30;
 
             this.walkSprite = "walk1";
             this.standSprite = "idle";
+
+            this.lastSprite = this.currentSprite = "stand";
         }
 
         public void Update()
         {
             lastSprite = currentSprite;
 
-            if (falling)
-            {
-                this.currentSprite = "fall";
-                this.pos.Y += fallingSpeed;
-            }
-            else if (jumping) 
+            if (jumping && canJump && (spriteDuration < maxJumpDuration || currentSprite != "jump"))
             {
                 this.currentSprite = "jump";
                 this.pos.Y -= jumpingSpeed;
-            } 
+            }
+            else if (falling)
+            {
+                this.currentSprite = "fall";
+                this.pos.Y += fallingSpeed;
+                this.canJump = false;
+            }
             else if (left || right)
             {
                 this.currentSprite = walkSprite;
+                this.canJump = true;
             }
             else
             {
                 this.currentSprite = standSprite;
+                this.canJump = true;
             }
 
             if (right)
@@ -74,7 +84,7 @@ namespace JumpOrQuit.Classes
             {
                 spriteDuration = 0;
             }
-            else if (spriteDuration > maxSpriteDuration)
+            else if (spriteDuration > maxSpriteDuration && !jumping && !falling)
             {
                 walkSprite = walkSprite == "walk1" ? "walk2" : "walk1";
                 standSprite = standSprite == "idle" ? "stand" : "idle";
@@ -91,7 +101,7 @@ namespace JumpOrQuit.Classes
                 null, 
                 Color.White, 
                 0, 
-                origins, 
+                origins,
                 1, 
                 this.left ? SpriteEffects.FlipHorizontally: SpriteEffects.None,
                 0

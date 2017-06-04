@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace JumpOrQuit.Classes
+namespace JumpOrQuit.Core
 {
     public class GameWindow
     {

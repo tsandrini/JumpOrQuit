@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 using JumpOrQuit.Classes;
 
-using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
+using DrawableGameComponent = JumpOrQuit.Core.RefreshableGameComponent;
 
 namespace JumpOrQuit.Components
 {

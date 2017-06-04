@@ -11,23 +11,29 @@ using Microsoft.Xna.Framework.Media;
 
 using JumpOrQuit.Classes;
 using JumpOrQuit.Helpers;
+using JumpOrQuit.Enums;
 
-using DrawableGameComponent = JumpOrQuit.Classes.RefreshableGameComponent;
+using DrawableGameComponent = JumpOrQuit.Core.RefreshableGameComponent;
 
 namespace JumpOrQuit.Components
 {
     public class LevelComponent : DrawableGameComponent
     {
         private Game game;
+        private GameSettings settings;
         private Player player;
+        private List<Ramp> ramps;
 
-        private bool gameRunning;
+        private Random random;
 
-        public LevelComponent(Game game)
+        public LevelComponent(Game game, GameSettings settings)
             : base(game)
         {
             this.game = game;
-            this.gameRunning = true;
+            this.settings = settings;
+            this.player = new Player(new Vector2(500, 500));
+            this.ramps = new List<Ramp>();
+            this.random = new Random();
         }
 
         public override void Initialize()
@@ -37,34 +43,59 @@ namespace JumpOrQuit.Components
 
         protected override void LoadContent()
         {
-            this.game.settings.addSprite(TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Player"));
-            this.player = new Player(this.game.settings.activeSprite, new Vector2(500, 500));
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (this.gameRunning)
+            if (this.game.gameState == GameState.Playing)
             {
-                this.player.Update();
-                this.player.jumping = this.game.KeyDown(Keys.Space);
+                foreach (Ramp ramp in ramps)
+                {
+                    if (ramp.InBounds((int)player.pos.X, (int)player.pos.Y))
+                    {
+                        this.player.falling = false;
+                        break;
+                    }
+                    else if (ramp == ramps.Last())
+                    {
+                        this.player.falling = true;
+                    }
+                }
 
-                if (game.KeyDown(Keys.Left))
+                this.player.jumping = this.game.KeyDown(Keys.Space) || this.game.KeyDown(Keys.Up);
+
+                if (game.KeyDown(Keys.Left) && this.player.pos.X > 0)
                 {
                     this.player.left = true;
                     this.player.right = false;
                 }
-                else
+                else if (game.KeyDown(Keys.Right) && (this.player.pos.X + this.player.width) < this.game.viewport.Width)
                 {
                     this.player.left = false;
-                    this.player.right = this.game.KeyDown(Keys.Right);
+                    this.player.right = true;
+                }
+                else
+                {
+                    this.player.left = this.player.right = false;
                 }
 
+                this.player.Update();
+                
+                foreach (Ramp ramp in this.ramps)
+                {
+                    ramp.Update();
+                }
             }
 
-            if (this.game.KeyDown(Keys.Escape))
+            if (this.game.KeyPressed(Keys.Escape))
             {
                 this.game.SwitchWindows(this.game.menuWindow);
+            }
+
+            if (this.game.settings.soundEnabled && (this.game.KeyPressed(Keys.Space) || this.game.KeyPressed(Keys.Up)) && this.player.canJump)
+            {
+                this.game.settings.sounds["game.jump." + random.Next(1, 4).ToString()].Play();
             }
 
             base.Update(gameTime);
@@ -75,7 +106,11 @@ namespace JumpOrQuit.Components
             game.spriteBatch.Begin();
 
             this.player.Draw(this.game.spriteBatch);
-            this.game.spriteBatch.MuchCoolerFont(this.game.menuFont, this.player.spriteDuration.ToString(), new Vector2(100, 100), Color.Black, 1);
+
+            foreach (Ramp ramp in this.ramps)
+            {
+                ramp.Draw(this.game.spriteBatch);
+            }
 
             game.spriteBatch.End();
 
@@ -85,6 +120,38 @@ namespace JumpOrQuit.Components
 
         public override void Refresh()
         {
+            this.ramps.Clear();
+
+            this.ramps.Add(new Ramp(
+                    new Vector2(0, this.game.viewport.Height - this.settings.rampThickness),
+                    new Vector2(this.game.viewport.Width, this.settings.rampThickness)
+            ));
+
+            this.ramps.Add(new Ramp(
+                new Vector2(0, 0),
+                new Vector2(this.settings.rampThickness, this.game.viewport.Height + 100)
+            ));
+
+            this.ramps.Add(new Ramp(
+                new Vector2(this.game.viewport.Width - this.settings.rampThickness, 0),
+                new Vector2(this.settings.rampThickness, this.game.viewport.Height + 100)
+            ));
+
+            int distanceBetween = this.game.viewport.Height / this.game.settings.rampsCount;
+            
+            for (int i = 0; i < this.settings.rampsCount; i++)
+            {
+                this.ramps.Add(new Ramp(
+                    new Vector2(random.Next((int) (game.viewport.Width * 0.1f), (int) (game.viewport.Width * 0.9f)), distanceBetween * i + 70),
+                    new Vector2(random.Next((int) (game.viewport.Width * 0.1f), (int) (game.viewport.Width * 0.3f)), settings.rampThickness)
+                ));
+            }
+
+            foreach (Ramp ramp in this.ramps)
+            {
+                ramp.SetTexture(this.settings.activeRamp);
+            }
+
             this.player.Reset(this.game.settings.activeSprite);
         }
     }
