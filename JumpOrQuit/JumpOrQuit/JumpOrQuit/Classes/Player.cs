@@ -13,7 +13,7 @@ namespace JumpOrQuit.Classes
     {
         public Dictionary<string, Texture2D> sprite;
         public Vector2 pos, startingPos, origins;
-        public bool falling, jumping, left, right, canJump;
+        public bool falling, jumping, left, right, canJump, crouching;
         public string lastSprite, currentSprite;
         public int spriteDuration, maxSpriteDuration, maxJumpDuration, fallingSpeed, movementSpeed, jumpingSpeed, height, width;
 
@@ -32,7 +32,7 @@ namespace JumpOrQuit.Classes
             this.width = sprite["idle"].Width;
             this.height = sprite["idle"].Height;
 
-            this.jumping = this.left = this.right = this.falling = this.canJump = false;
+            this.jumping = this.left = this.right = this.falling = this.canJump = this.crouching = false;
             this.fallingSpeed = this.movementSpeed = 6;
             this.jumpingSpeed = 10;
             this.maxSpriteDuration = 15;
@@ -58,6 +58,18 @@ namespace JumpOrQuit.Classes
                 this.currentSprite = "fall";
                 this.pos.Y += fallingSpeed;
                 this.canJump = false;
+            }
+            else if (crouching)
+            {
+                if (left || right)
+                {
+                    this.currentSprite = "slide";
+                }
+                else
+                {
+                    this.currentSprite = "duck";
+                }
+                this.canJump = true;
             }
             else if (left || right)
             {

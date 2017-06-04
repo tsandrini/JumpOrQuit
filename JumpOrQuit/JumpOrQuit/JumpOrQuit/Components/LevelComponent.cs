@@ -25,6 +25,7 @@ namespace JumpOrQuit.Components
         private List<Ramp> ramps;
 
         private Random random;
+        private bool canScroll;
 
         public LevelComponent(Game game, GameSettings settings)
             : base(game)
@@ -34,6 +35,7 @@ namespace JumpOrQuit.Components
             this.player = new Player(new Vector2(500, 500));
             this.ramps = new List<Ramp>();
             this.random = new Random();
+            this.canScroll = false;
         }
 
         public override void Initialize()
@@ -54,6 +56,10 @@ namespace JumpOrQuit.Components
                 {
                     if (ramp.InBounds((int)player.pos.X, (int)player.pos.Y))
                     {
+                        if (ramp != ramps.First())
+                        {
+                            canScroll = true;
+                        }
                         this.player.falling = false;
                         break;
                     }
@@ -64,6 +70,7 @@ namespace JumpOrQuit.Components
                 }
 
                 this.player.jumping = this.game.KeyDown(Keys.Space) || this.game.KeyDown(Keys.Up);
+                this.player.crouching = this.game.KeyDown(Keys.Down);
 
                 if (game.KeyDown(Keys.Left) && this.player.pos.X > 0)
                 {
@@ -81,10 +88,31 @@ namespace JumpOrQuit.Components
                 }
 
                 this.player.Update();
-                
-                foreach (Ramp ramp in this.ramps)
+
+                if (this.canScroll)
                 {
-                    ramp.Update();
+                    foreach (Ramp ramp in this.ramps)
+                    {
+                        ramp.Update();
+
+                        // If not base ramp
+                        if (ramp != ramps.First())
+                        {
+                            // If side ramp
+                            if (ramp == ramps[1] || ramp == ramps[2])
+                            {
+                                if (ramp.position.Y > 0)
+                                {
+                                    ramp.position.Y = 0 - game.viewport.Height - ramp.sizes.Y;
+                                }
+                            }
+                            else if (ramp.position.Y > this.game.viewport.Height)
+                            {
+                                ramp.position.Y = 0;
+                                ramp.position.X = random.Next((int)(game.viewport.Width * 0.2f), (int)(game.viewport.Width * 0.8f));
+                            }
+                        }
+                    }
                 }
             }
 
@@ -122,19 +150,22 @@ namespace JumpOrQuit.Components
         {
             this.ramps.Clear();
 
+            // Main base ramp
             this.ramps.Add(new Ramp(
                     new Vector2(0, this.game.viewport.Height - this.settings.rampThickness),
                     new Vector2(this.game.viewport.Width, this.settings.rampThickness)
             ));
 
+            // Side ramp
             this.ramps.Add(new Ramp(
                 new Vector2(0, 0),
                 new Vector2(this.settings.rampThickness, this.game.viewport.Height + 100)
             ));
 
+            // Side ramp
             this.ramps.Add(new Ramp(
                 new Vector2(this.game.viewport.Width - this.settings.rampThickness, 0),
-                new Vector2(this.settings.rampThickness, this.game.viewport.Height + 100)
+                new Vector2(this.settings.rampThickness, this.game.viewport.Height * 1.5f)
             ));
 
             int distanceBetween = this.game.viewport.Height / this.game.settings.rampsCount;
@@ -142,7 +173,7 @@ namespace JumpOrQuit.Components
             for (int i = 0; i < this.settings.rampsCount; i++)
             {
                 this.ramps.Add(new Ramp(
-                    new Vector2(random.Next((int) (game.viewport.Width * 0.1f), (int) (game.viewport.Width * 0.9f)), distanceBetween * i + 70),
+                    new Vector2(random.Next((int) (game.viewport.Width * 0.2f), (int) (game.viewport.Width * 0.8f)), distanceBetween * i + this.game.viewport.Width * 0.1f),
                     new Vector2(random.Next((int) (game.viewport.Width * 0.1f), (int) (game.viewport.Width * 0.3f)), settings.rampThickness)
                 ));
             }

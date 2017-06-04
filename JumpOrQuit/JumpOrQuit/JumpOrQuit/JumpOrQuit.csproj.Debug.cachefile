@@ -42,3 +42,8 @@ Content\Graphics\Sprites\Zombie\stand.xnb
 Content\Graphics\Sprites\Zombie\walk1.xnb
 Content\Graphics\Sprites\Zombie\walk2.xnb
 Content\Graphics\Ramps\1.xnb
+Content\Graphics\Sprites\Adventurer\slide.xnb
+Content\Graphics\Sprites\Female\slide.xnb
+Content\Graphics\Sprites\Player\slide.xnb
+Content\Graphics\Sprites\Soldier\slide.xnb
+Content\Graphics\Sprites\Zombie\slide.xnb

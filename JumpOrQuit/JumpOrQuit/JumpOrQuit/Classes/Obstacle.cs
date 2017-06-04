@@ -12,11 +12,13 @@ namespace JumpOrQuit.Classes
         public Texture2D texture;
         public Vector2 position;
         public Vector2 sizes;
+        public int scrollingSpeed;
 
         public Obstacle(Vector2 position, Vector2 sizes)
         {
             this.sizes = sizes;
             this.position = position;
+            this.scrollingSpeed = 2;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -52,7 +54,7 @@ namespace JumpOrQuit.Classes
     
         public void Update()
         {
-
+            this.position.Y += scrollingSpeed;
         }
     }
 }
