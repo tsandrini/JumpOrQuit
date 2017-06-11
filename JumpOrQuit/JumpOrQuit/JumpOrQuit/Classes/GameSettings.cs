@@ -49,13 +49,12 @@ namespace JumpOrQuit.Classes
         public GameSettings()
         {
             this.activeSpriteKey = activeRampKey = activeBackgroundKey = 0;
-            this.rampsCount = 3;
+            this.rampsCount = 4;
             this.soundEnabled = true;
             this.vimMode = false;
-            this.rampThickness = 25
-                ;
+            this.rampThickness = 27;
             this.defaultPlayerLives = 3;
-            this.defaultScrollingSpeed = 4;
+            this.defaultScrollingSpeed = 3;
 
             this.avaibleSprites = new List<Dictionary<string, Texture2D>>();
             this.avaibleRamps = new List<Texture2D>();

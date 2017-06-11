@@ -48,6 +48,7 @@ namespace JumpOrQuit.Components
             this.settings.avaibleBackgrounds = TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Backgrounds\ingame");
 
             this.settings.textures.Add("hearth", this.game.Content.Load<Texture2D>(@"Graphics\hearth"));
+            this.settings.textures.Add("star", this.game.Content.Load<Texture2D>(@"Graphics\star"));
             this.settings.textures.Add("sound.enabled", this.game.Content.Load<Texture2D>(@"Graphics\sound_enabled"));
             this.settings.textures.Add("sound.disabled", this.game.Content.Load<Texture2D>(@"Graphics\sound_disabled"));
             this.settings.textures.Add("vim-mode", this.game.Content.Load<Texture2D>(@"Graphics\vim_mode"));

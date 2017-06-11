@@ -37,7 +37,7 @@ namespace JumpOrQuit.Classes
             this.movementSpeed = 6;
             this.jumpingSpeed = 10;
             this.maxSpriteDuration = 15;
-            this.maxJumpDuration = 25;
+            this.maxJumpDuration = 27;
 
             this.walkSprite = "walk1";
             this.standSprite = "idle";
@@ -115,7 +115,7 @@ namespace JumpOrQuit.Classes
                 Color.White, 
                 0, 
                 origins,
-                0.9f, 
+                0.8f, 
                 this.left ? SpriteEffects.FlipHorizontally: SpriteEffects.None,
                 0
             );

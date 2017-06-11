@@ -46,16 +46,25 @@ namespace JumpOrQuit.Classes
 
     public class Ramp : Obstacle
     {
-        public int scrollingSpeed;
+        public int scrollingSpeed, movingSpeed;
+        public bool canMoveHorizontally, right;
 
         public Ramp(Vector2 position, Vector2 sizes, int scrollingSpeed) : base (position, sizes)
         {
             this.scrollingSpeed = scrollingSpeed;
+            this.movingSpeed = scrollingSpeed - 1;
+            this.canMoveHorizontally = false;
+            this.right = true;
         }
     
         public void Update()
         {
             this.position.Y += scrollingSpeed;
+
+            if (canMoveHorizontally)
+            {
+                this.position.X = right ? this.position.X + movingSpeed : this.position.X - movingSpeed;
+            }
         }
     }
 }

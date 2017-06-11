@@ -62,7 +62,7 @@ namespace JumpOrQuit.Components
                 // Checks whether playing is falling or not
                 foreach (Ramp ramp in ramps)
                 {
-                    if (ramp.InBounds((int)player.pos.X, (int)player.pos.Y))
+                    if (ramp.InBounds((int)player.pos.X, (int)(player.pos.Y + player.height * 0.02f)))
                     {
                         if (ramp != ramps.First())
                         {
@@ -71,6 +71,11 @@ namespace JumpOrQuit.Components
                             
                             // Don't fall but still go down
                             this.player.pos.Y += ramp.scrollingSpeed;
+
+                            if (ramp.canMoveHorizontally)
+                            {
+                                this.player.pos.X = ramp.right ? player.pos.X + ramp.movingSpeed : player.pos.X - ramp.movingSpeed;
+                            }
                         }
 
                         this.lastRamp = this.currentRamp;
@@ -124,11 +129,21 @@ namespace JumpOrQuit.Components
                                     ramp.position.Y = 0 - (ramp.sizes.Y - this.game.viewport.Height);
                                 }
                             }
-                            else if (ramp.position.Y > this.game.viewport.Height)
+                            else
                             {
-                                ramp.position.Y = 0;
-                                ramp.sizes.X = random.Next((int)(game.viewport.Width * 0.2f), (int)(game.viewport.Width * 0.4f));
-                                ramp.position.X = random.Next((int)(this.game.viewport.Width * 0.1f), (int)(this.game.viewport.Width - ramp.sizes.X - settings.rampThickness));
+                                if (ramp.position.Y > game.viewport.Height)
+                                {
+                                    ramp.position.Y = 0;
+                                    ramp.sizes.X = random.Next((int)(game.viewport.Width * 0.2f), (int)(game.viewport.Width * 0.4f));
+                                    ramp.position.X = random.Next((int)(this.game.viewport.Width * 0.1f), (int)(this.game.viewport.Width - ramp.sizes.X - settings.rampThickness));
+                                    ramp.right = random.Next(2) == 1; // 50% left 50% right
+                                }
+
+                                if (ramp.canMoveHorizontally && (ramp.position.X <= settings.rampThickness || ramp.position.X >= (game.viewport.Width - ramp.sizes.X - settings.rampThickness)))
+                                {
+                                    ramp.right = !ramp.right;
+                                }
+
                             }
                         }
                     }
@@ -208,6 +223,16 @@ namespace JumpOrQuit.Components
             {
                 ramp.SetTexture(this.settings.activeRamp);
                 ramp.scrollingSpeed++;
+
+                if (!ramp.canMoveHorizontally && difficulty > 2 && ramp != ramps[0] && ramp != ramps[1] && ramp != ramps[2])
+                {
+                    ramp.canMoveHorizontally = true;
+                }
+
+                if (ramp.canMoveHorizontally && difficulty > 3)
+                {
+                    ramp.movingSpeed++;
+                }
             }
         }
 
@@ -215,9 +240,42 @@ namespace JumpOrQuit.Components
         {
             game.spriteBatch.Begin();
 
-            this.game.spriteBatch.MuchCoolerFont(game.menuFont, "Points: " + this.points.ToString(), new Vector2(50, 50), Color.AliceBlue, 1);
-            this.game.spriteBatch.MuchCoolerFont(game.menuFont, "HP: " + this.lives.ToString(), new Vector2(50, 100), Color.AliceBlue, 1);
-            this.game.spriteBatch.MuchCoolerFont(game.menuFont, "Lvl: " + this.difficulty.ToString(), new Vector2(50, 150), Color.AliceBlue, 1);
+            this.game.spriteBatch.MuchCoolerFont(game.menuFont, 
+                "Skóre: " + this.points.ToString(), 
+                new Vector2(40, 20), 
+                Color.DarkCyan, 
+            1);
+
+            this.game.spriteBatch.MuchCoolerFont(game.menuFont, 
+                "HP: ",
+                new Vector2(40, 70), 
+                Color.DarkCyan, 
+            1);
+
+            this.game.spriteBatch.MuchCoolerFont(game.menuFont, 
+                "LVL: ",
+                new Vector2(40, 120), 
+                Color.DarkCyan,
+            1);
+
+            for (int i = 0; i < lives; i++)
+            {
+                this.game.spriteBatch.Draw(
+                    settings.textures["hearth"],
+                    new Rectangle(100 + (i * 60), 60, 60, 60),
+                    Color.White
+                );
+            }
+
+            for (int i = 0; i < difficulty; i++)
+            {
+                this.game.spriteBatch.Draw(
+                    settings.textures["star"],
+                    new Rectangle(130 + (i * 60), 110, 60, 60),
+                    Color.White
+                );
+            }
+
 
             this.player.Draw(this.game.spriteBatch);
 
@@ -270,12 +328,12 @@ namespace JumpOrQuit.Components
 
             this.currentRamp = this.lastRamp = this.ramps.First();
 
-            int distanceBetween = this.game.viewport.Height / this.game.settings.rampsCount;
+            float distanceBetween = this.game.viewport.Height / this.game.settings.rampsCount;
             
             for (int i = 0; i < this.settings.rampsCount; i++)
             {
                 this.ramps.Add(new Ramp(
-                    new Vector2(random.Next((int) (game.viewport.Width * 0.2f), (int) (game.viewport.Width * 0.8f)), distanceBetween * i + this.game.viewport.Width * 0.1f),
+                    new Vector2(random.Next((int) (game.viewport.Width * 0.3f), (int) (game.viewport.Width * 0.7f)), distanceBetween * i - this.game.viewport.Width * 0.08f),
                     new Vector2(random.Next((int) (game.viewport.Width * 0.2f), (int) (game.viewport.Width * 0.4f)), settings.rampThickness),
                     this.settings.defaultScrollingSpeed
                 ));
@@ -284,6 +342,11 @@ namespace JumpOrQuit.Components
             foreach (Ramp ramp in this.ramps)
             {
                 ramp.SetTexture(this.settings.activeRamp);
+
+                if (ramp != ramps[0] && ramp != ramps[1] && ramp != ramps[2])
+                {
+                    ramp.right = random.Next(2) == 1;
+                }
             }
 
             this.player.Reset(this.game.settings.activeSprite);
