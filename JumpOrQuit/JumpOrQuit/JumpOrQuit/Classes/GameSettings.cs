@@ -12,12 +12,15 @@ namespace JumpOrQuit.Classes
     {
         public List<Dictionary<string, Texture2D>> avaibleSprites;
         public List<Texture2D> avaibleRamps;
+        public List<Texture2D> avaibleBackgrounds;
+
         public Dictionary<string, SoundEffect> sounds;
+        public Dictionary<string, Texture2D> textures;
 
         public int rampsCount, rampThickness;
-        public bool soundEnabled;
+        public bool soundEnabled, vimMode;
 
-        private int activeSpriteKey, activeRampKey;
+        public int activeSpriteKey, activeRampKey, activeBackgroundKey, defaultPlayerLives, defaultScrollingSpeed;
 
         public Dictionary<string, Texture2D> activeSprite
         {
@@ -35,16 +38,30 @@ namespace JumpOrQuit.Classes
             }
         }
 
+        public Texture2D activeBackground
+        {
+            get
+            {
+                return this.avaibleBackgrounds.ElementAt(activeBackgroundKey);
+            }
+        }
+
         public GameSettings()
         {
-            this.activeSpriteKey = activeRampKey = 0;
-            this.rampsCount = 2;
+            this.activeSpriteKey = activeRampKey = activeBackgroundKey = 0;
+            this.rampsCount = 3;
             this.soundEnabled = true;
-            this.rampThickness = 20;
+            this.vimMode = false;
+            this.rampThickness = 25
+                ;
+            this.defaultPlayerLives = 3;
+            this.defaultScrollingSpeed = 4;
 
             this.avaibleSprites = new List<Dictionary<string, Texture2D>>();
             this.avaibleRamps = new List<Texture2D>();
             this.sounds = new Dictionary<string, SoundEffect>();
+            this.textures = new Dictionary<string, Texture2D>();
+            this.avaibleBackgrounds = new List<Texture2D>();
         }
 
         public void addSprite(Dictionary<string, Texture2D> sprite)

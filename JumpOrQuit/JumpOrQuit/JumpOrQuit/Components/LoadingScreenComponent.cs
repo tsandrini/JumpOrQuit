@@ -38,13 +38,19 @@ namespace JumpOrQuit.Components
         public void Load()
         {
             // Load player sprites
-            this.settings.addSprite(TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Adventurer"));
-            this.settings.addSprite(TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Female"));
-            this.settings.addSprite(TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Player"));
-            this.settings.addSprite(TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Soldier"));
-            this.settings.addSprite(TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Zombie"));
+            this.settings.addSprite(TextureContent.LoadDictionaryContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Adventurer"));
+            this.settings.addSprite(TextureContent.LoadDictionaryContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Female"));
+            this.settings.addSprite(TextureContent.LoadDictionaryContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Player"));
+            this.settings.addSprite(TextureContent.LoadDictionaryContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Soldier"));
+            this.settings.addSprite(TextureContent.LoadDictionaryContent<Texture2D>(this.game.Content, @"Graphics\Sprites\Zombie"));
 
-            this.settings.avaibleRamps.Add(this.game.Content.Load<Texture2D>(@"Graphics\ramps\1"));
+            this.settings.avaibleRamps = TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Ramps");
+            this.settings.avaibleBackgrounds = TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Backgrounds\ingame");
+
+            this.settings.textures.Add("hearth", this.game.Content.Load<Texture2D>(@"Graphics\hearth"));
+            this.settings.textures.Add("sound.enabled", this.game.Content.Load<Texture2D>(@"Graphics\sound_enabled"));
+            this.settings.textures.Add("sound.disabled", this.game.Content.Load<Texture2D>(@"Graphics\sound_disabled"));
+            this.settings.textures.Add("vim-mode", this.game.Content.Load<Texture2D>(@"Graphics\vim_mode"));
 
             this.settings.sounds.Add("menu.select", this.game.Content.Load<SoundEffect>(@"SFX\menu\menu_select"));
             this.settings.sounds.Add("menu.confirm", this.game.Content.Load<SoundEffect>(@"SFX\menu\menu_confirm"));
@@ -53,6 +59,9 @@ namespace JumpOrQuit.Components
             this.settings.sounds.Add("game.jump.2", this.game.Content.Load<SoundEffect>(@"SFX\ingame\jump2"));
             this.settings.sounds.Add("game.jump.3", this.game.Content.Load<SoundEffect>(@"SFX\ingame\jump3"));
             this.settings.sounds.Add("game.jump.4", this.game.Content.Load<SoundEffect>(@"SFX\ingame\jump4"));
+
+            this.settings.sounds.Add("game.death", this.game.Content.Load<SoundEffect>(@"SFX\ingame\death"));
+            this.settings.sounds.Add("game.end", this.game.Content.Load<SoundEffect>(@"SFX\ingame\end"));
 
             Thread.Sleep(1500); // In case someone has NASA pc :D
 

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 using JumpOrQuit.Classes;
+using JumpOrQuit.Enums;
 
 using DrawableGameComponent = JumpOrQuit.Core.RefreshableGameComponent;
 
@@ -38,6 +39,8 @@ namespace JumpOrQuit.Components
             this.height = height;
             this.items = new List<MenuItem>();
             this.selectedItem = null;
+
+            this.DrawOrder = (int)DisplayLayer.MenuBack;
         }
 
         public void AddItem(string text, string identifier)
@@ -97,12 +100,12 @@ namespace JumpOrQuit.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (game.KeyPressed(Keys.Up))
+            if ((!settings.vimMode && game.KeyPressed(Keys.Up)) || (settings.vimMode && game.KeyPressed(Keys.K)))
             {
                 this.SelectPreviousItem();
             }
 
-            if (game.KeyPressed(Keys.Down))
+            if ((!settings.vimMode && game.KeyPressed(Keys.Down)) || (settings.vimMode && game.KeyPressed(Keys.J)))
             {
                 this.SelectNextItem();
             }

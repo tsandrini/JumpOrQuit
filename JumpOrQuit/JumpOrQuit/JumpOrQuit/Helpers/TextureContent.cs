@@ -11,7 +11,7 @@ namespace JumpOrQuit.Helpers
 {
     public static class TextureContent
     {
-        public static Dictionary<string, T> LoadListContent<T>(ContentManager contentManager, string contentFolder)
+        public static Dictionary<string, T> LoadDictionaryContent<T>(ContentManager contentManager, string contentFolder)
         {
             DirectoryInfo dir = new DirectoryInfo(contentManager.RootDirectory + "/" + contentFolder);
             if (!dir.Exists)
@@ -25,6 +25,24 @@ namespace JumpOrQuit.Helpers
 
 
                 result[key] = contentManager.Load<T>(contentFolder + "/" + key);
+            }
+            return result;
+        }
+
+        public static List<T> LoadListContent<T>(ContentManager contentManager, string contentFolder)
+        {
+            DirectoryInfo dir = new DirectoryInfo(contentManager.RootDirectory + "/" + contentFolder);
+            if (!dir.Exists)
+                throw new DirectoryNotFoundException();
+            List<T> result = new List<T>();
+
+            FileInfo[] files = dir.GetFiles("*.*");
+            foreach (FileInfo file in files)
+            {
+                string key = Path.GetFileNameWithoutExtension(file.Name);
+
+
+                result.Add(contentManager.Load<T>(contentFolder + "/" + key));
             }
             return result;
         }

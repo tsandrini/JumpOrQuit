@@ -33,10 +33,11 @@ namespace JumpOrQuit.Classes
             this.height = sprite["idle"].Height;
 
             this.jumping = this.left = this.right = this.falling = this.canJump = this.crouching = false;
-            this.fallingSpeed = this.movementSpeed = 6;
+            this.fallingSpeed = 10;
+            this.movementSpeed = 6;
             this.jumpingSpeed = 10;
             this.maxSpriteDuration = 15;
-            this.maxJumpDuration = 30;
+            this.maxJumpDuration = 25;
 
             this.walkSprite = "walk1";
             this.standSprite = "idle";
@@ -114,7 +115,7 @@ namespace JumpOrQuit.Classes
                 Color.White, 
                 0, 
                 origins,
-                1, 
+                0.9f, 
                 this.left ? SpriteEffects.FlipHorizontally: SpriteEffects.None,
                 0
             );

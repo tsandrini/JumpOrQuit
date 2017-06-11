@@ -48,7 +48,7 @@ namespace JumpOrQuit.Components
 
         public override void Update(GameTime gameTime)
         {
-            if (this.game.KeyPressed(Keys.Enter))
+            if ((!settings.vimMode && this.game.KeyPressed(Keys.Enter)) || (settings.vimMode && this.game.KeyPressed(Keys.Space)))
             {
                 this.ItemSubmitted();
             }
@@ -69,6 +69,12 @@ namespace JumpOrQuit.Components
                     {
                         this.game.gameState = GameState.Playing;
                         this.game.SwitchWindows(this.game.ingameWindow);
+                        break;
+                    }
+                case "settings":
+                    {
+                        this.game.gameState = GameState.Menu;
+                        this.game.SwitchWindows(this.game.settingsScreen);
                         break;
                     }
             }

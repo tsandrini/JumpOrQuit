@@ -10,6 +10,7 @@ namespace JumpOrQuit.Enums
         Loading,
         Menu,
         Playing,
-        Paused
+        Paused,
+        GameEnded
     }
 }

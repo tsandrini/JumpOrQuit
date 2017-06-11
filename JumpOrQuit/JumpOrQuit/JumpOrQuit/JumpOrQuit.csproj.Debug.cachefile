@@ -27,7 +27,6 @@ Content\Graphics\Sprites\Female\jump.xnb
 Content\Graphics\Sprites\Female\stand.xnb
 Content\Graphics\Sprites\Female\walk1.xnb
 Content\Graphics\Sprites\Female\walk2.xnb
-Content\Graphics\Ramps\2.xnb
 Content\Graphics\Sprites\Soldier\duck.xnb
 Content\Graphics\Sprites\Soldier\fall.xnb
 Content\Graphics\Sprites\Soldier\idle.xnb
@@ -47,3 +46,14 @@ Content\Graphics\Sprites\Female\slide.xnb
 Content\Graphics\Sprites\Player\slide.xnb
 Content\Graphics\Sprites\Soldier\slide.xnb
 Content\Graphics\Sprites\Zombie\slide.xnb
+Content\SFX\ingame\end.xnb
+Content\Graphics\hearth.xnb
+Content\Graphics\sound_disabled.xnb
+Content\Graphics\sound_enabled.xnb
+Content\Graphics\Sprites\Soldier\stand.xnb
+Content\Graphics\Ramps\4.xnb
+Content\Graphics\Ramps\6.xnb
+Content\Graphics\vim_mode.xnb
+Content\Graphics\Backgrounds\ingame\3.xnb
+Content\Graphics\Backgrounds\ingame\1.xnb
+Content\Graphics\Backgrounds\ingame\2.xnb

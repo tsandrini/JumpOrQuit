@@ -24,12 +24,25 @@ namespace JumpOrQuit
     {
         private GraphicsDeviceManager graphics;
         public CoolFont spriteBatch;
-        public GameState gameState;
+        public GameState currentState, lastGameState;
+
+        public GameState gameState
+        {
+            get
+            {
+                return currentState;
+            }
+            set
+            {
+                lastGameState = currentState;
+                currentState = value;
+            }
+        }
 
         public KeyboardState keys, lastKey;
         public MouseState mouse, lastMouse;
         public SpriteFont menuFont;
-        public GameWindow loadingScreen, menuWindow, ingameWindow;
+        public GameWindow loadingScreen, menuWindow, ingameWindow, settingsScreen;
         public GameSettings settings;
 
         public Viewport viewport
@@ -77,15 +90,35 @@ namespace JumpOrQuit
             menuItems.AddItem("Nastavení", "settings");
             menuItems.AddItem("Odejít", "exit");
 
-            MenuComponent menu = new MenuComponent(this,settings, menuItems);
+            MenuItemsComponent settingScreenItems = new MenuItemsComponent(
+                this,
+                settings,
+                new Vector2(this.viewport.Width * 0.45f, this.viewport.Height * 0.75f),
+                Color.Blue,
+                Color.Yellow,
+                72
+            );
+
+            settingScreenItems.AddItem("Postava", "player-sprite");
+            settingScreenItems.AddItem("Hudba", "music-enabled");
+            settingScreenItems.AddItem("Zpìt do menu", "back");
+
+            ScrollingBackgroundComponent scrollingBackground = new ScrollingBackgroundComponent(this, settings);
+            this.Components.Add(scrollingBackground);
+
+            GameSettingsScreenComponent settingsScreenComponent = new GameSettingsScreenComponent(this, settings, settingScreenItems);
+            this.Components.Add(settingsScreenComponent);
+
+            MenuComponent menu = new MenuComponent(this, settings, menuItems);
             this.Components.Add(menu);
 
-            LevelComponent level = new LevelComponent(this, settings);
+            LevelComponent level = new LevelComponent(this, settings, scrollingBackground);
             this.Components.Add(level);
 
             this.loadingScreen = new GameWindow(this, loading);
-            this.menuWindow = new GameWindow(this, menu, menuItems, settingsComponent);
-            this.ingameWindow = new GameWindow(this, level, settingsComponent);
+            this.menuWindow = new GameWindow(this, menu, menuItems, settingsComponent, scrollingBackground);
+            this.ingameWindow = new GameWindow(this, level, settingsComponent, scrollingBackground);
+            this.settingsScreen = new GameWindow(this, settingsScreenComponent, settingScreenItems, settingsComponent, scrollingBackground);
 
             foreach (GameComponent component in this.Components)
             {
@@ -144,6 +177,11 @@ namespace JumpOrQuit
         public bool KeyDown(Keys key)
         {
             return keys.IsKeyDown(key);
+        }
+
+        public bool GameStateChanged()
+        {
+            return currentState != lastGameState;
         }
 
         public void SwitchWindows(GameWindow gameWindow)
