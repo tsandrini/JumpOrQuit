@@ -60,6 +60,7 @@
     <Compile Include="Classes\Background.cs" />
     <Compile Include="Classes\CoolFont.cs" />
     <Compile Include="Classes\GameSettings.cs" />
+    <Compile Include="Components\AboutScreenComponent.cs" />
     <Compile Include="Components\GameSettingsScreenComponent.cs" />
     <Compile Include="Core\GameWindow.cs" />
     <Compile Include="Classes\MenuItem.cs" />

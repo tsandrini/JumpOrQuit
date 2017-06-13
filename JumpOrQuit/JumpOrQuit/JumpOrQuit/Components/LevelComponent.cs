@@ -30,7 +30,7 @@ namespace JumpOrQuit.Components
         private Random random;
         private bool canScroll, canEarnPoint;
         // Current points used for increasing difficulty
-        private int points, currentPoints, lives, difficulty;
+        private int points, currentPoints, lives, difficulty, dotsCount, ticks;
 
         public LevelComponent(Game game, GameSettings settings, ScrollingBackgroundComponent scrollingBackground)
             : base(game)
@@ -62,7 +62,7 @@ namespace JumpOrQuit.Components
                 // Checks whether playing is falling or not
                 foreach (Ramp ramp in ramps)
                 {
-                    if (ramp.InBounds((int)player.pos.X, (int)(player.pos.Y + player.height * 0.02f)))
+                    if (ramp.InBounds((int)(player.pos.X + (this.player.width * 0.5f)), (int)(player.pos.Y + player.height * 0.03f)))
                     {
                         if (ramp != ramps.First())
                         {
@@ -93,6 +93,12 @@ namespace JumpOrQuit.Components
 
                 this.player.jumping = (!settings.vimMode && (game.KeyDown(Keys.Space) || game.KeyDown(Keys.Up)) || (settings.vimMode && game.KeyDown(Keys.K)));
                 this.player.crouching = (!settings.vimMode && this.game.KeyDown(Keys.Down)) || (settings.vimMode && game.KeyDown(Keys.J));
+
+                // Prevent from jumping out of the screen
+                if (this.player.jumping && ((this.player.pos.Y - (this.player.width * 0.6f)) <= 0))
+                {
+                    this.player.jumping = false;
+                }
 
                 if (((!settings.vimMode && game.KeyDown(Keys.Left)) || (settings.vimMode && game.KeyDown(Keys.H))) && this.player.pos.X > 0)
                 {
@@ -159,20 +165,22 @@ namespace JumpOrQuit.Components
                         }
                         else
                         {
+                            if (this.settings.soundEnabled) this.game.settings.sounds["game.end"].Play();
                             this.game.gameState = GameState.GameEnded;
+                            this.scrollingBackground.canScroll = false;
                         }
                     }
                 }
 
                 if (this.canEarnPoint)
                 {
-                    this.points += 5;
-                    this.currentPoints += 5;
+                    this.points++;
+                    this.currentPoints++;
                     this.canEarnPoint = false;
                 }
 
                 // Difficulty is increased dynamically. 
-                if (this.currentPoints != 0 && (this.currentPoints % (10 * Math.Pow(2, difficulty)) == 0))
+                if (this.currentPoints != 0 && (this.currentPoints % (15 * Math.Pow(2, difficulty)) == 0))
                 {
                     IncreaseDifficulty();
                 }
@@ -184,21 +192,29 @@ namespace JumpOrQuit.Components
                     this.game.settings.sounds["game.jump." + random.Next(1, 4).ToString()].Play();
                 }
             }
+            else
+            {
+                if (ticks > 40)
+                {
+                    dotsCount = dotsCount != 4 ? dotsCount + 1 : 0;
+                    ticks = 0;
+                }
+
+                ticks++;
+            }
 
             if (this.game.KeyPressed(Keys.Escape))
             {
                 this.game.gameState = GameState.Menu;
+                this.scrollingBackground.canScroll = true;
                 this.game.SwitchWindows(this.game.menuWindow);
             }
 
-            // Player's lost
-            if (this.game.gameState == GameState.GameEnded)
+            if (this.game.KeyPressed(Keys.P) && game.gameState != GameState.GameEnded)
             {
-                if (this.settings.soundEnabled) this.game.settings.sounds["game.end"].Play();
-                this.game.gameState = GameState.Menu;
-                this.game.SwitchWindows(this.game.menuWindow);
+                this.game.gameState = game.gameState == GameState.Playing ? GameState.Paused : GameState.Playing;
+                this.scrollingBackground.canScroll = canScroll && game.gameState == GameState.Playing;
             }
-
 
             base.Update(gameTime);
         }
@@ -207,7 +223,7 @@ namespace JumpOrQuit.Components
         {
             this.difficulty++;
             this.player.fallingSpeed++;
-            this.player.jumpingSpeed++;
+            this.player.jumpingSpeed += 2;
             this.player.movementSpeed++;
             this.player.maxJumpDuration--;
 
@@ -240,19 +256,22 @@ namespace JumpOrQuit.Components
         {
             game.spriteBatch.Begin();
 
-            this.game.spriteBatch.MuchCoolerFont(game.menuFont, 
+            this.game.spriteBatch.MuchCoolerFont(
+                this.settings.fonts["ingame"], 
                 "Skóre: " + this.points.ToString(), 
                 new Vector2(40, 20), 
                 Color.DarkCyan, 
             1);
 
-            this.game.spriteBatch.MuchCoolerFont(game.menuFont, 
+            this.game.spriteBatch.MuchCoolerFont(
+                this.settings.fonts["ingame"], 
                 "HP: ",
                 new Vector2(40, 70), 
                 Color.DarkCyan, 
             1);
 
-            this.game.spriteBatch.MuchCoolerFont(game.menuFont, 
+            this.game.spriteBatch.MuchCoolerFont(
+                this.settings.fonts["ingame"], 
                 "LVL: ",
                 new Vector2(40, 120), 
                 Color.DarkCyan,
@@ -276,12 +295,32 @@ namespace JumpOrQuit.Components
                 );
             }
 
-
             this.player.Draw(this.game.spriteBatch);
 
             foreach (Ramp ramp in this.ramps)
             {
                 ramp.Draw(this.game.spriteBatch);
+            }
+
+            if (game.gameState == GameState.GameEnded)
+            {
+                this.game.spriteBatch.MuchCoolerFont(
+                    this.settings.fonts["ingame.bigger"],
+                    "Konec hry " + new string('.', dotsCount),
+                    new Vector2(this.game.viewport.Width * 0.4f, this.game.viewport.Height * 0.45f),
+                    Color.LightCyan,
+                    1f
+                );
+            }
+            else if (game.gameState == GameState.Paused)
+            {
+                this.game.spriteBatch.MuchCoolerFont(
+                    this.settings.fonts["ingame.bigger"],
+                    "Pauza " + new string('.', dotsCount),
+                    new Vector2(this.game.viewport.Width * 0.4f, this.game.viewport.Height * 0.45f),
+                    Color.LightCyan,
+                    1f
+                );
             }
 
             game.spriteBatch.End();
@@ -303,7 +342,7 @@ namespace JumpOrQuit.Components
             this.ramps.Clear();
             this.canScroll = this.canEarnPoint = this.scrollingBackground.canScroll =  false;
             this.difficulty = 1;
-            this.currentPoints = 0;
+            this.currentPoints = this.dotsCount = this.ticks = 0;
 
             // Main base ramp
             this.ramps.Add(new Ramp(

@@ -38,7 +38,7 @@ namespace JumpOrQuit.Classes
 
         public bool InBounds(int x, int y)
         {
-            Rectangle rect = new Rectangle((int) this.position.X, (int) this.position.Y, (int) this.sizes.X, (int) this.sizes.Y);
+            Rectangle rect = new Rectangle((int) this.position.X, (int) this.position.Y, (int) this.sizes.X, (int) (this.sizes.Y * 0.5f));
 
             return rect.Contains(x, y);
         }

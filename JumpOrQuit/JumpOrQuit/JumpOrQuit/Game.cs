@@ -41,8 +41,7 @@ namespace JumpOrQuit
 
         public KeyboardState keys, lastKey;
         public MouseState mouse, lastMouse;
-        public SpriteFont menuFont;
-        public GameWindow loadingScreen, menuWindow, ingameWindow, settingsScreen;
+        public GameWindow loadingScreen, menuWindow, ingameWindow, settingsScreen, aboutScreen;
         public GameSettings settings;
 
         public Viewport viewport
@@ -88,6 +87,7 @@ namespace JumpOrQuit
 
             menuItems.AddItem("Hrát", "new-game");
             menuItems.AddItem("Nastavení", "settings");
+            menuItems.AddItem("O høe", "about");
             menuItems.AddItem("Odejít", "exit");
 
             MenuItemsComponent settingScreenItems = new MenuItemsComponent(
@@ -109,6 +109,9 @@ namespace JumpOrQuit
             GameSettingsScreenComponent settingsScreenComponent = new GameSettingsScreenComponent(this, settings, settingScreenItems);
             this.Components.Add(settingsScreenComponent);
 
+            AboutScreenComponent aboutScreenComponent = new AboutScreenComponent(this, settings);
+            this.Components.Add(aboutScreenComponent);
+
             MenuComponent menu = new MenuComponent(this, settings, menuItems);
             this.Components.Add(menu);
 
@@ -119,6 +122,7 @@ namespace JumpOrQuit
             this.menuWindow = new GameWindow(this, menu, menuItems, settingsComponent, scrollingBackground);
             this.ingameWindow = new GameWindow(this, level, settingsComponent, scrollingBackground);
             this.settingsScreen = new GameWindow(this, settingsScreenComponent, settingScreenItems, settingsComponent, scrollingBackground);
+            this.aboutScreen = new GameWindow(this, settingsComponent, scrollingBackground, aboutScreenComponent);
 
             foreach (GameComponent component in this.Components)
             {
@@ -140,7 +144,7 @@ namespace JumpOrQuit
         protected override void LoadContent()
         {
             this.spriteBatch = new CoolFont(GraphicsDevice);
-            this.menuFont = Content.Load<SpriteFont>(@"Fonts\menuFont");
+            this.settings.fonts.Add("menu", Content.Load<SpriteFont>(@"Fonts\menuFont"));
         }
 
         protected override void UnloadContent()
@@ -159,7 +163,7 @@ namespace JumpOrQuit
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Azure);
 
             base.Draw(gameTime);
         }

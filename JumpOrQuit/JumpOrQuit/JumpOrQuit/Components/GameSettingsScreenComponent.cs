@@ -84,8 +84,16 @@ namespace JumpOrQuit.Components
 
             this.game.spriteBatch.Draw(
                 this.game.settings.activeSprite["idle"],
-                new Rectangle(500, 500, 100, 100),
+                new Rectangle((int)(this.game.viewport.Width * 0.6f), (int)(this.game.viewport.Height * 0.6f), 100, 100),
                 Color.White
+            );
+
+            this.game.spriteBatch.MuchCoolerFont(
+                this.settings.fonts["menu.bigger"],
+                "Nastavení",
+                new Vector2(this.game.viewport.Width * 0.3f, this.game.viewport.Height * 0.05f),
+                Color.LightCyan,
+                1f
             );
 
             this.game.spriteBatch.End();

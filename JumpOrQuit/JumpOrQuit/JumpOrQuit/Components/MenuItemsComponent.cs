@@ -125,8 +125,8 @@ namespace JumpOrQuit.Components
                     color = this.selectedColor;
                 }
 
-                game.spriteBatch.MuchCoolerFont(game.menuFont, item.text, item.pos, color, item.scale);
-                item.size = game.menuFont.MeasureString(item.text);
+                game.spriteBatch.MuchCoolerFont(settings.fonts["menu"], item.text, item.pos, color, item.scale);
+                item.size = settings.fonts["menu"].MeasureString(item.text);
             }
 
             game.spriteBatch.End();

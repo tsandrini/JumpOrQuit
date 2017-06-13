@@ -37,7 +37,7 @@ namespace JumpOrQuit.Classes
             this.movementSpeed = 6;
             this.jumpingSpeed = 10;
             this.maxSpriteDuration = 15;
-            this.maxJumpDuration = 27;
+            this.maxJumpDuration = 30;
 
             this.walkSprite = "walk1";
             this.standSprite = "idle";
@@ -57,7 +57,7 @@ namespace JumpOrQuit.Classes
             else if (falling)
             {
                 this.currentSprite = "fall";
-                this.pos.Y += fallingSpeed;
+                this.pos.Y += crouching ? fallingSpeed * 1.3f : fallingSpeed;
                 this.canJump = false;
             }
             else if (crouching)
@@ -83,13 +83,14 @@ namespace JumpOrQuit.Classes
                 this.canJump = true;
             }
 
+            // if sliding, move faster than normal
             if (right)
             {
-                this.pos.X += movementSpeed;
+                this.pos.X += crouching ? movementSpeed * 1.6f : movementSpeed;
             } 
             else if (left)
             {
-                this.pos.X -= movementSpeed;
+                this.pos.X -= crouching ? movementSpeed * 1.6f : movementSpeed;
             }
 
 

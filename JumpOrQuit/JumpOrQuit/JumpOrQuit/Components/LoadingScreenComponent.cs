@@ -27,12 +27,16 @@ namespace JumpOrQuit.Components
         private GameSettings settings;
         private Thread thread;
 
+        private int dotsCount, ticks;
+
         public LoadingScreenComponent(Game game, GameSettings settings)
             : base(game)
         {
             this.game = game;
             this.loading = false;
             this.settings = settings;
+            this.dotsCount = 3;
+            this.ticks = 0;
         }
 
         public void Load()
@@ -47,12 +51,15 @@ namespace JumpOrQuit.Components
             this.settings.avaibleRamps = TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Ramps");
             this.settings.avaibleBackgrounds = TextureContent.LoadListContent<Texture2D>(this.game.Content, @"Graphics\Backgrounds\ingame");
 
+            // TEXTURES - MISC
             this.settings.textures.Add("hearth", this.game.Content.Load<Texture2D>(@"Graphics\hearth"));
             this.settings.textures.Add("star", this.game.Content.Load<Texture2D>(@"Graphics\star"));
             this.settings.textures.Add("sound.enabled", this.game.Content.Load<Texture2D>(@"Graphics\sound_enabled"));
             this.settings.textures.Add("sound.disabled", this.game.Content.Load<Texture2D>(@"Graphics\sound_disabled"));
             this.settings.textures.Add("vim-mode", this.game.Content.Load<Texture2D>(@"Graphics\vim_mode"));
+            this.settings.textures.Add("logo", this.game.Content.Load<Texture2D>(@"Graphics\logo"));
 
+            // SOUNDS
             this.settings.sounds.Add("menu.select", this.game.Content.Load<SoundEffect>(@"SFX\menu\menu_select"));
             this.settings.sounds.Add("menu.confirm", this.game.Content.Load<SoundEffect>(@"SFX\menu\menu_confirm"));
 
@@ -64,7 +71,13 @@ namespace JumpOrQuit.Components
             this.settings.sounds.Add("game.death", this.game.Content.Load<SoundEffect>(@"SFX\ingame\death"));
             this.settings.sounds.Add("game.end", this.game.Content.Load<SoundEffect>(@"SFX\ingame\end"));
 
-            Thread.Sleep(1500); // In case someone has NASA pc :D
+            // FONTS
+            this.settings.fonts.Add("ingame", this.game.Content.Load<SpriteFont>(@"Fonts\ingameFont"));
+            this.settings.fonts.Add("ingame.bigger", this.game.Content.Load<SpriteFont>(@"Fonts\biggerIngameFont"));
+            this.settings.fonts.Add("menu.bigger", this.game.Content.Load<SpriteFont>(@"Fonts\biggerMenuFont"));
+            this.settings.fonts.Add("paragraph", this.game.Content.Load<SpriteFont>(@"Fonts\paragraphFont"));
+
+            Thread.Sleep(3000); // In case someone has NASA pc :D
 
             this.game.gameState = GameState.Menu;
         }
@@ -92,6 +105,14 @@ namespace JumpOrQuit.Components
                 this.game.SwitchWindows(this.game.menuWindow);
             }
 
+            if (ticks > 40)
+            {
+                dotsCount = dotsCount != 4 ? dotsCount + 1 : 1;
+                ticks = 0;
+            }
+
+            ticks++;
+
             base.Update(gameTime);
         }
 
@@ -99,7 +120,11 @@ namespace JumpOrQuit.Components
         {
             this.game.spriteBatch.Begin();
 
-            this.game.spriteBatch.MuchCoolerFont(this.game.menuFont, "Naèítá se hra ...", new Vector2(300, 300), Color.CadetBlue, 2);
+            this.game.spriteBatch.MuchCoolerFont(
+                this.settings.fonts["menu"],
+                "Hra se naèítá" + new string('.', dotsCount),
+                new Vector2(this.game.viewport.Width * 0.28f, this.game.viewport.Height * 0.45f),
+                Color.DarkCyan, 2);
 
             this.game.spriteBatch.End();
 

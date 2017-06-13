@@ -16,6 +16,7 @@ namespace JumpOrQuit.Classes
 
         public Dictionary<string, SoundEffect> sounds;
         public Dictionary<string, Texture2D> textures;
+        public Dictionary<string, SpriteFont> fonts;
 
         public int rampsCount, rampThickness;
         public bool soundEnabled, vimMode;
@@ -61,6 +62,7 @@ namespace JumpOrQuit.Classes
             this.sounds = new Dictionary<string, SoundEffect>();
             this.textures = new Dictionary<string, Texture2D>();
             this.avaibleBackgrounds = new List<Texture2D>();
+            this.fonts = new Dictionary<string, SpriteFont>();
         }
 
         public void addSprite(Dictionary<string, Texture2D> sprite)

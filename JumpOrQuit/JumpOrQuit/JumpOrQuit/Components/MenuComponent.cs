@@ -43,6 +43,22 @@ namespace JumpOrQuit.Components
 
         public override void Draw(GameTime gameTime)
         {
+            this.game.spriteBatch.Begin();
+
+            this.game.spriteBatch.Draw(
+                this.settings.textures["logo"],
+                new Vector2(this.game.viewport.Width * 0.2f, this.game.viewport.Height * 0.1f),
+                null,
+                Color.White,
+                0,
+                new Vector2(0, 0),
+                1,
+                SpriteEffects.None,
+                0
+            );
+
+            this.game.spriteBatch.End();
+
             base.Draw(gameTime);
         }
 
@@ -75,6 +91,12 @@ namespace JumpOrQuit.Components
                     {
                         this.game.gameState = GameState.Menu;
                         this.game.SwitchWindows(this.game.settingsScreen);
+                        break;
+                    }
+                case "about":
+                    {
+                        this.game.gameState = GameState.Menu;
+                        this.game.SwitchWindows(this.game.aboutScreen);
                         break;
                     }
             }
