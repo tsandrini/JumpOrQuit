@@ -10,19 +10,29 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 using JumpOrQuit.Classes;
+using JumpOrQuit.Enums;
+
+using DrawableGameComponent = JumpOrQuit.Core.RefreshableGameComponent;
 
 namespace JumpOrQuit.Components
 {
-    public class ScrollingBackgroundComponent : Microsoft.Xna.Framework.DrawableGameComponent
+    public class ScrollingBackgroundComponent : DrawableGameComponent
     {
         private Game game;
-        private List<ScrollingBackground> backgrounds;
+        private GameSettings settings;
 
-        public ScrollingBackgroundComponent(Game game)
+        public List<ScrollingBackground> backgrounds;
+        public bool canScroll;
+
+        public ScrollingBackgroundComponent(Game game, GameSettings settings)
             : base(game)
         {
             this.game = game;
+            this.settings = settings;
             this.backgrounds = new List<ScrollingBackground>();
+            this.canScroll = true;
+
+            this.DrawOrder = (int)DisplayLayer.Background;
         }
 
         public override void Initialize()
@@ -33,21 +43,41 @@ namespace JumpOrQuit.Components
 
         public override void Update(GameTime gameTime)
         {
-            for (int i = 0; i < backgrounds.Count; i++)
+            if (canScroll)
             {
-                if (backgrounds[i].rectangle.X + backgrounds[i].rectangle.Width <= 0)
+                for (int i = 0; i < backgrounds.Count; i++)
                 {
-                    if (backgrounds[i] == this.backgrounds.Last())
+                    if (backgrounds[i].horizontal)
                     {
-                        backgrounds[i].rectangle.X = backgrounds.First().rectangle.X + backgrounds.First().rectangle.Width;
+                        if (backgrounds[i].rectangle.X + backgrounds[i].rectangle.Width <= 0)
+                        {
+                            if (backgrounds[i] == this.backgrounds.Last())
+                            {
+                                backgrounds[i].rectangle.X = backgrounds.First().rectangle.X + backgrounds.First().rectangle.Width;
+                            }
+                            else
+                            {
+                                backgrounds[i].rectangle.X = backgrounds[i + 1].rectangle.X + backgrounds[i + 1].rectangle.Width;
+                            }
+                        }
                     }
                     else
                     {
-                        backgrounds[i].rectangle.X = backgrounds[i + 1].rectangle.X + backgrounds[i + 1].rectangle.Width;
+                        if (backgrounds[i].rectangle.Y - this.game.viewport.Height >= 0)
+                        {
+                            if (backgrounds[i] == this.backgrounds.Last())
+                            {
+                                backgrounds[i].rectangle.Y = backgrounds.First().rectangle.Y - backgrounds.First().rectangle.Height;
+                            }
+                            else
+                            {
+                                backgrounds[i].rectangle.Y = backgrounds[i + 1].rectangle.Y - backgrounds[i + 1].rectangle.Height;
+                            }
+                        }
                     }
-                }
 
-                backgrounds[i].Update();
+                    backgrounds[i].Update();
+                }
             }
 
             base.Update(gameTime);
@@ -67,11 +97,48 @@ namespace JumpOrQuit.Components
             base.Draw(gameTime);
         }
 
-        public void AddBackground(ScrollingBackground background)
+        public void ChangeTexture(Texture2D texture)
         {
-            if (!this.backgrounds.Contains(background))
+            foreach (ScrollingBackground background in backgrounds)
             {
-                this.backgrounds.Add(background);
+                background.texture = texture;
+            }
+        }
+
+        public override void Refresh()
+        {
+            if (this.game.GameStateChanged())
+            {
+                this.backgrounds.Clear();
+
+                if (this.game.gameState == GameState.Menu)
+                {
+                    this.backgrounds.Add(new ScrollingBackground(
+                        this.settings.activeBackground,
+                        new Rectangle(0, 0, (int)(this.game.viewport.Width * 1.5f), this.game.viewport.Height),
+                        true
+                    ));
+
+                    this.backgrounds.Add(new ScrollingBackground(
+                        this.settings.activeBackground,
+                        new Rectangle((int)(this.game.viewport.Width * 1.5f), 0, (int)(this.game.viewport.Width * 1.5f), this.game.viewport.Height),
+                        true
+                    ));
+                }
+                else if (this.game.gameState == GameState.Playing)
+                {
+                    this.backgrounds.Add(new ScrollingBackground(
+                        this.settings.activeBackground,
+                        new Rectangle(0, 0, this.game.viewport.Width, (int)(this.game.viewport.Height * 1.5f)),
+                        false
+                    ));
+
+                    this.backgrounds.Add(new ScrollingBackground(
+                        this.settings.activeBackground,
+                        new Rectangle(0, - (int)(this.game.viewport.Height * 1.5f) , this.game.viewport.Width, (int)(this.game.viewport.Height * 1.5f)),
+                        false
+                    ));
+                }
             }
         }
     }

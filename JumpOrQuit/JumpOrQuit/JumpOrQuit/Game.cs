@@ -11,21 +11,38 @@ using Microsoft.Xna.Framework.Media;
 
 using JumpOrQuit.Classes;
 using JumpOrQuit.Components;
+using JumpOrQuit.Helpers;
+using JumpOrQuit.Enums; 
 
 // Aliases
-using GameWindow = JumpOrQuit.Classes.GameWindow; // Override the default game window
+using GameWindow = JumpOrQuit.Core.GameWindow; // Override the default game window
+using DrawableGameComponent = JumpOrQuit.Core.RefreshableGameComponent;
 
 namespace JumpOrQuit
 {
     public class Game : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
+        private GraphicsDeviceManager graphics;
         public CoolFont spriteBatch;
+        public GameState currentState, lastGameState;
+
+        public GameState gameState
+        {
+            get
+            {
+                return currentState;
+            }
+            set
+            {
+                lastGameState = currentState;
+                currentState = value;
+            }
+        }
 
         public KeyboardState keys, lastKey;
         public MouseState mouse, lastMouse;
-        public SpriteFont menuFont;
-        protected GameWindow loadingScreen, menuWindow, ingameWindow;
+        public GameWindow loadingScreen, menuWindow, ingameWindow, settingsScreen, aboutScreen;
+        public GameSettings settings;
 
         public Viewport viewport
         {
@@ -51,8 +68,17 @@ namespace JumpOrQuit
 
         protected override void Initialize()
         {
+            this.settings = new GameSettings();
+
+            GameSettingsComponent settingsComponent = new GameSettingsComponent(this, settings, graphics);
+            this.Components.Add(settingsComponent);
+
+            LoadingScreenComponent loading = new LoadingScreenComponent(this, settings);
+            this.Components.Add(loading);
+
             MenuItemsComponent menuItems = new MenuItemsComponent(
                 this,
+                settings,
                 new Vector2(this.viewport.Width * 0.45f, this.viewport.Height * 0.75f),
                 Color.Blue,
                 Color.Yellow,
@@ -61,12 +87,42 @@ namespace JumpOrQuit
 
             menuItems.AddItem("Hrát", "new-game");
             menuItems.AddItem("Nastavení", "settings");
+            menuItems.AddItem("O høe", "about");
             menuItems.AddItem("Odejít", "exit");
 
-            MenuComponent menu = new MenuComponent(this, menuItems);
+            MenuItemsComponent settingScreenItems = new MenuItemsComponent(
+                this,
+                settings,
+                new Vector2(this.viewport.Width * 0.45f, this.viewport.Height * 0.75f),
+                Color.Blue,
+                Color.Yellow,
+                72
+            );
+
+            settingScreenItems.AddItem("Postava", "player-sprite");
+            settingScreenItems.AddItem("Hudba", "music-enabled");
+            settingScreenItems.AddItem("Zpìt do menu", "back");
+
+            ScrollingBackgroundComponent scrollingBackground = new ScrollingBackgroundComponent(this, settings);
+            this.Components.Add(scrollingBackground);
+
+            GameSettingsScreenComponent settingsScreenComponent = new GameSettingsScreenComponent(this, settings, settingScreenItems);
+            this.Components.Add(settingsScreenComponent);
+
+            AboutScreenComponent aboutScreenComponent = new AboutScreenComponent(this, settings);
+            this.Components.Add(aboutScreenComponent);
+
+            MenuComponent menu = new MenuComponent(this, settings, menuItems);
             this.Components.Add(menu);
 
-            this.menuWindow = new GameWindow(this, menu, menuItems);
+            LevelComponent level = new LevelComponent(this, settings, scrollingBackground);
+            this.Components.Add(level);
+
+            this.loadingScreen = new GameWindow(this, loading);
+            this.menuWindow = new GameWindow(this, menu, menuItems, settingsComponent, scrollingBackground);
+            this.ingameWindow = new GameWindow(this, level, settingsComponent, scrollingBackground);
+            this.settingsScreen = new GameWindow(this, settingsScreenComponent, settingScreenItems, settingsComponent, scrollingBackground);
+            this.aboutScreen = new GameWindow(this, settingsComponent, scrollingBackground, aboutScreenComponent);
 
             foreach (GameComponent component in this.Components)
             {
@@ -76,12 +132,11 @@ namespace JumpOrQuit
             // BASE GRAPHICS STUFF
             this.IsMouseVisible = false;
             //this.graphics.IsFullScreen = true;
-            this.graphics.PreferredBackBufferHeight = 1080;
-            this.graphics.PreferredBackBufferWidth = 1920;
+            this.graphics.PreferredBackBufferHeight = 720;
+            this.graphics.PreferredBackBufferWidth = 1280;
             this.graphics.ApplyChanges();
 
-
-            this.SwitchWindows(menuWindow);
+            this.SwitchWindows(loadingScreen);
 
             base.Initialize();
         }
@@ -89,7 +144,7 @@ namespace JumpOrQuit
         protected override void LoadContent()
         {
             this.spriteBatch = new CoolFont(GraphicsDevice);
-            this.menuFont = Content.Load<SpriteFont>(@"Fonts\menuFont");
+            this.settings.fonts.Add("menu", Content.Load<SpriteFont>(@"Fonts\menuFont"));
         }
 
         protected override void UnloadContent()
@@ -108,7 +163,7 @@ namespace JumpOrQuit
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Azure);
 
             base.Draw(gameTime);
         }
@@ -121,6 +176,16 @@ namespace JumpOrQuit
         public bool KeyPressed(Keys key)
         {
             return keys.IsKeyDown(key) && lastKey.IsKeyUp(key);
+        }
+
+        public bool KeyDown(Keys key)
+        {
+            return keys.IsKeyDown(key);
+        }
+
+        public bool GameStateChanged()
+        {
+            return currentState != lastGameState;
         }
 
         public void SwitchWindows(GameWindow gameWindow)
@@ -141,6 +206,10 @@ namespace JumpOrQuit
             if (component is DrawableGameComponent)
             {
                 ((DrawableGameComponent)component).Visible = state;
+                if (state == true)
+                {
+                    ((DrawableGameComponent)component).Refresh();
+                }
             }
         }
     }

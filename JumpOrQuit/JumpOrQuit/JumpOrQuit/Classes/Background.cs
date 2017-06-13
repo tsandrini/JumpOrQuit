@@ -27,10 +27,12 @@ namespace JumpOrQuit.Classes
     public class ScrollingBackground : Background
     {
         public int scrollingSpeed;
+        public bool horizontal;
 
-        public ScrollingBackground(Texture2D texture, Rectangle rectangle) : base(texture, rectangle)
+        public ScrollingBackground(Texture2D texture, Rectangle rectangle, bool horizontal) : base(texture, rectangle)
         {
-            scrollingSpeed = 1;
+            scrollingSpeed = 2;
+            this.horizontal = horizontal;
         }
 
         public ScrollingBackground(Texture2D texture, Rectangle rectangle, int scrollingSpeed) : base(texture, rectangle)
@@ -40,7 +42,14 @@ namespace JumpOrQuit.Classes
 
         public void Update()
         {
-            this.rectangle.X -= scrollingSpeed;
+            if (horizontal)
+            {
+                this.rectangle.X -= scrollingSpeed;
+            }
+            else
+            {
+                this.rectangle.Y += scrollingSpeed;
+            }
         }
     }
 
